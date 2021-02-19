@@ -12,28 +12,31 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
   import axios from "axios";
   import Mapbox from 'mapbox-gl-vue';
+  import { defineComponent } from 'vue';
 
-  export default {
+  export default defineComponent ({
     name: 'CitiesMap',
     components: {
       Mapbox
     },
     data() {
+      const cities: any[] = [];
       return {
-        cities: []
+        // cities: [{lat: Number, lon: Number, name: String, temperature: Number, weather: String, icon: String, updatedAt: Date}]
+        cities
       }
     },
     methods: {
-      loadCities(citiesData) {
+      loadCities(citiesData: any) {
         this.cities = [];
         for (const {name, coord: {lat, lon}, weather: [{description: weather, icon: icon}], main: {temp: temperature}, dt: updatedAt} of citiesData) {
           this.cities.push({name, lat, lon, weather, icon, temperature, updatedAt: new Date(updatedAt * 1000)});
         }
       },
-      loaded(map) {
+      loaded(map: any) {
         const mapboxgl = require('mapbox-gl/dist/mapbox-gl');
 
         this.cities.forEach(function(city) {
@@ -52,7 +55,7 @@
       axios.get(`https://api.openweathermap.org/data/2.5/find?lat=${process.env.VUE_APP_DEFAULT_LATITUDE}&lon=${process.env.VUE_APP_DEFAULT_LONGITUDE}&cnt=20&cluster=yes&lang=fr&units=metric&APPID=${process.env.VUE_APP_OW_APP_ID}`)
         .then((resp) => this.loadCities(resp.data.list));
     }
-  }
+  })
 </script>
 
 <style scoped>

@@ -6,26 +6,30 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
   import {format, register} from 'timeago.js';
   import timeAgoFr from  'timeago.js/esm/lang/fr';
+  import { defineComponent } from 'vue';
 
   register('fr', timeAgoFr);
 
-  export default {
+  export default defineComponent ({
     name: 'City',
     props: {
       name: String,
       weather: String,
       temperature: Number,
-      updatedAt: Date
+      updatedAt: Number
     },
     computed: {
-      formattedDate: function() {
-        return format(this.updatedAt, 'fr');
+      formattedDate: function(): String {
+        if (this.updatedAt) {
+          return format(new Date(this.updatedAt * 1000), 'fr');
+        }
+        return '';
       }
     }
-  }
+  })
 </script>
 
 <style scoped>
